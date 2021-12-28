@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<style>
+    input[type=text],
+    select {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    
+    input[type=button] {
+        width: 100%;
+        background-color: #078666;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    input[type=button]:hover {
+        background-color: #10b7e0;
+    }
+    
+    div {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+    }
+    
+    #customers {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    #customers td,
+    #customers th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    
+    #customers tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    
+    #customers tr:hover {
+        background-color: #ddd;
+    }
+    
+    #customers th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #04AA6D;
+        color: white;
+    }
+</style>
+
+<body>
+    <h3>Frase</h3>
+    <div>
+        <form action="/action_page.php">
+            <label for="fname">Frase</label>
+            <input type="text" id="frase" placeholder="ingrese una Frase">
+            <input onclick="calFrase()" type="button" value="Calcular">
+        </form>
+    </div>
+    <h3>Contador Numeros Primos</h3>
+    <div>
+        <form action="/action_page.php">
+            <label for="fname">Inferior</label>
+            <input type="text" id="inferior" placeholder="ingrese un numero">
+
+            <label for="lname">Superior</label>
+            <input type="text" id="superior" placeholder="Ingrse un numero">
+            <input onclick="calPrimo()" type="button" value="Calcular">
+        </form>
+    </div>
+
+    <h3>Calculadora</h3>
+    <div>
+        <form action="/action_page.php">
+            <label for="fname">Primer Nnumero</label>
+            <input type="text" id="a" placeholder="ingrese un numero">
+
+            <label for="lname">Segundo Numero</label>
+            <input type="text" id="b" placeholder="Ingrse un numero">
+
+            <label for="country">Seleccion una operacion</label>
+            <select id="operacion" name="country">
+      <option id="+"value="+">suma</option>
+      <option id="-" value="-">resta</option>
+      <option id="*" value="*">multiplicacion</option>
+      <option id="/" value="/">division</option>
+    </select>
+            <input onclick="calOperacion()" type="button" value="Calcular">
+        </form>
+    </div>
+
+
+    <script>
+        function calOperacion() {
+            var numero1 = document.querySelector('#a').value
+            var numero2 = document.querySelector('#b').value
+            var signo = document.querySelector('#operacion').value
+            var dato = {
+                'numero1': numero1,
+                'numero2': numero2,
+                'signo': signo
+            }
+            console.log(dato)
+            fetch('http://localhost:3000/calcular', {
+                    method: 'POST',
+                    body: JSON.stringify(dato),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => res.json())
+                .catch(err => { //sucede si hay un error en el fetch
+                    console.error('Error: ', err)
+                    alert("Ocurrio un error, ver en consola")
+                })
+                .then(response => {
+                    console.log(response);
+                    console.log(response.message)
+                    if (response.message == "200") {
+                        alert("Respuesta: " + response.respuesta)
+                    }
+                })
+        }
+
+        function calPrimo() {
+            var inferior = document.querySelector('#inferior').value
+            var superior = document.querySelector('#superior').value
+            var dato = {
+                'inferior': inferior,
+                'superior': superior,
+            }
+            console.log(dato)
+            fetch('http://localhost:3000/primo', {
+                    method: 'POST',
+                    body: JSON.stringify(dato),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => res.json())
+                .catch(err => { //sucede si hay un error en el fetch
+                    console.error('Error: ', err)
+                    alert("Ocurrio un error, ver en consola")
+                })
+                .then(response => {
+                    console.log(response);
+                    console.log(response.message)
+                    if (response.message == "200") {
+                        alert("Primos: " + response.primos)
+                    }
+                })
+        }
+
+        function calFrase() {
+            var frase = document.querySelector('#frase').value
+            var dato = {
+                'frase': frase
+            }
+            console.log(dato)
+            fetch('http://localhost:3000/vocales', {
+                    method: 'POST',
+                    body: JSON.stringify(dato),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => res.json())
+                .catch(err => { //sucede si hay un error en el fetch
+                    console.error('Error: ', err)
+                    alert("Ocurrio un error, ver en consola")
+                })
+                .then(response => {
+                    console.log(response);
+                    console.log(response.message)
+                    if (response.message == "200") {
+                        alert("Palabras: " + response.palabras + " Vocales: " + response.vocales + " Consonantes: " + response.consonantes)
+                    }
+                })
+        }
+    </script>
+
+
+
+</body>
+
+</html>
